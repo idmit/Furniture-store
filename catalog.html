@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Каталог — Мебель PRO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-content">
+      <a href="index.html" class="logo">Мебель <span>PRO</span></a>
+      <ul class="nav-links">
+        <li><a href="catalog.html" class="active">Каталог</a></li>
+        <li><a href="about.html">О нас</a></li>
+        <li><a href="shipping.html">Доставка</a></li>
+        <li><a href="cart.html" class="cart-link">Корзина <span id="cart-count"></span></a></li>
+      </ul>
+    </div>
+  </nav>
+  <main>
+    <div class="container">
+      <h1 class="main-title">Каталог мебели</h1>
+      <div class="catalog-controls">
+        <input type="text" id="searchInput" placeholder="Поиск по товарам...">
+        <select id="sortSelect">
+          <option value="default">Сортировка</option>
+          <option value="price-asc">Сначала дешевые</option>
+          <option value="price-desc">Сначала дорогие</option>
+          <option value="title-asc">По алфавиту</option>
+          <option value="title-desc">По алфавиту (обратно)</option>
+        </select>
+      </div>
+      <div class="catalog-categories" id="catalog-categories"></div>
+      <div id="catalog-list" class="catalog-grid"></div>
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <div>
+          <div class="footer-logo">Мебель <span>PRO</span></div>
+          <div class="footer-copyright">© 2025 Мебель PRO</div>
+        </div>
+        <div>
+          <a href="contacts.html">Контакты</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="products.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    const catCont = document.getElementById('catalog-categories');
+    catCont.innerHTML = `<button class="cat-btn active" data-cat="all">Все</button>` +
+      categories.map(cat => `<button class="cat-btn" data-cat="${cat.id}">${cat.name}</button>`).join('');
+    let currentCat = "all", searchValue = "", sortValue = "default";
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCat = btn.dataset.cat;
+        renderCatalog();
+      };
+    });
+    document.getElementById('searchInput').oninput = function() {
+      searchValue = this.value;
+      renderCatalog();
+    };
+    document.getElementById('sortSelect').onchange = function() {
+      sortValue = this.value;
+      renderCatalog();
+    };
+    function renderCatalog() {
+      const list = document.getElementById('catalog-list');
+      let filtered = products.filter(p => 
+        (currentCat === "all" || p.category === currentCat) &&
+        (p.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+         (p.description && p.description.toLowerCase().includes(searchValue.toLowerCase())))
+      );
+      if (sortValue === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
+      else if (sortValue === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
+      else if (sortValue === 'title-asc') filtered.sort((a,b)=>a.title.localeCompare(b.title));
+      else if (sortValue === 'title-desc') filtered.sort((a,b)=>b.title.localeCompare(a.title));
+      list.innerHTML = filtered.map(product => `
+        <div class="product-card">
+          <a href="product.html?id=${product.id}">
+            <img src="${product.image}" alt="${product.title}">
+            <h3>${product.title}</h3>
+            <div class="product-tags">
+              ${product.tags.map(t => `<span class="tag tag-${t === "Новинка" ? "new" : t === "Хит" ? "hit" : "sale"}">${t}</span>`).join('')}
+            </div>
+          </a>
+          <div class="price-row">
+            <span class="price">${product.price.toLocaleString('ru-RU')} ₽</span>
+            <button class="btn" onclick="addToCart(${product.id})">В корзину</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    renderCatalog();
+  </script>
+</body>
+</html>

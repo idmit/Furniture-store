@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Мебель PRO — стильная мебель для дома</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-content">
+      <a href="index.html" class="logo">Мебель <span>PRO</span></a>
+      <ul class="nav-links">
+        <li><a href="catalog.html">Каталог</a></li>
+        <li><a href="about.html">О нас</a></li>
+        <li><a href="shipping.html">Доставка</a></li>
+        <li><a href="cart.html" class="cart-link">Корзина <span id="cart-count"></span></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- БАННЕР-СЛАЙДЕР -->
+  <div class="banner-slider">
+    <div class="banner" style="background-image:url('https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80')">
+      <div class="banner-content">
+        <h2>Летняя коллекция 2025</h2>
+        <p>Свежие цвета и новые формы для вашего интерьера!</p>
+        <a href="catalog.html" class="btn btn-primary">Смотреть новинки</a>
+      </div>
+    </div>
+    <div class="banner" style="background-image:url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80')">
+      <div class="banner-content right">
+        <h2>Скидки до 30% на кровати</h2>
+        <p>Выгодные предложения только до конца месяца</p>
+        <a href="catalog.html" class="btn btn-primary">Каталог кроватей</a>
+      </div>
+    </div>
+    <div class="banner" style="background-image:url('https://images.unsplash.com/photo-1460518451285-97b6aa326961?auto=format&fit=crop&w=1200&q=80')">
+      <div class="banner-content">
+        <h2>Доставка и сборка бесплатно</h2>
+        <p>При заказе от 50 000 ₽</p>
+        <a href="shipping.html" class="btn btn-primary">Подробнее</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <h1>Стильная мебель для вашего уюта</h1>
+        <p>Современный дизайн, экологичные материалы и европейское качество.<br>Обновите интерьер вместе с Мебель PRO!</p>
+        <a href="catalog.html" class="btn btn-primary">Смотреть каталог</a>
+      </div>
+      <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=600&q=80" alt="Современный диван" class="hero-img">
+    </div>
+  </header>
+  <section class="catalog-preview container">
+    <h2>Хиты каталога</h2>
+    <div id="catalog-preview-list" class="catalog-grid"></div>
+  </section>
+  <section class="benefits container">
+    <h2>Почему выбирают нас?</h2>
+    <div class="benefits-row">
+      <div class="benefit">
+        <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Экологичные материалы">
+        <h4>Экологичные материалы</h4>
+        <p>Используем только безопасные и сертифицированные материалы</p>
+      </div>
+      <div class="benefit">
+        <img src="https://cdn-icons-png.flaticon.com/512/190/190406.png" alt="Гарантия качества">
+        <h4>Гарантия качества</h4>
+        <p>Гарантия на всю продукцию — 3 года</p>
+      </div>
+      <div class="benefit">
+        <img src="https://cdn-icons-png.flaticon.com/512/190/190431.png" alt="Быстрая доставка">
+        <h4>Быстрая доставка</h4>
+        <p>Оперативная доставка и сборка по всей стране</p>
+      </div>
+      <div class="benefit">
+        <img src="https://cdn-icons-png.flaticon.com/512/190/190422.png" alt="Современный дизайн">
+        <h4>Современный дизайн</h4>
+        <p>Всегда актуальные коллекции мебели</p>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <div>
+          <div class="footer-logo">Мебель <span>PRO</span></div>
+          <div class="footer-copyright">© 2025 Мебель PRO</div>
+        </div>
+        <div>
+          <a href="contacts.html">Контакты</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="products.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    // БАННЕР-СЛАЙДЕР
+    let banners = document.querySelectorAll('.banner');
+    let bannerIdx = 0;
+    function showBanner(idx) {
+      banners.forEach((b,i)=>b.classList.toggle('active',i===idx));
+    }
+    showBanner(bannerIdx);
+    setInterval(()=>{
+      bannerIdx = (bannerIdx+1)%banners.length;
+      showBanner(bannerIdx);
+    }, 5000);
+
+    // Превью товаров на главной (только теги "Хит" или "Новинка")
+    const preview = document.getElementById('catalog-preview-list');
+    products.filter(p => p.tags.includes('Хит') || p.tags.includes('Новинка'))
+      .slice(0,4).forEach(product => {
+      const card = document.createElement('div');
+      card.className = "product-card";
+      card.innerHTML = `
+        <a href="product.html?id=${product.id}">
+          <img src="${product.image}" alt="${product.title}">
+          <h3>${product.title}</h3>
+          <div class="product-tags">
+            ${product.tags.map(t => `<span class="tag tag-${t === "Новинка" ? "new" : t === "Хит" ? "hit" : "sale"}">${t}</span>`).join('')}
+          </div>
+        </a>
+        <div class="price-row">
+          <span class="price">${product.price.toLocaleString('ru-RU')} ₽</span>
+          <button class="btn" onclick="addToCart(${product.id})">В корзину</button>
+        </div>
+      `;
+      preview.appendChild(card);
+    });
+  </script>
+</body>
+</html>
